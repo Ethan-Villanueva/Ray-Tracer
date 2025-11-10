@@ -15,6 +15,16 @@ class vec3 {
         double getY() const { return coordinates.at(1); }
         double getZ() const { return coordinates.at(2); }
 
+        // Utility functions
+        double length() const {
+            return std::sqrt(length_squared());
+        }
+        double length_squared() const {
+            return coordinates.at(0)*coordinates.at(0)
+                 + coordinates.at(1)*coordinates.at(1)
+                 + coordinates.at(2)*coordinates.at(2);
+        }
+
     private:
         // Operator overloads
         vec3 operator-() const {
@@ -43,22 +53,14 @@ class vec3 {
         vec3& operator/=(const double t) {
             return *this *= 1/t;
         }
-
-        // Utility functions
-        double length() const {
-            return std::sqrt(length_squared());
-        }
-        double length_squared() const {
-            return coordinates.at(0)*coordinates.at(0)
-                 + coordinates.at(1)*coordinates.at(1)
-                 + coordinates.at(2)*coordinates.at(2);
-        }
 };
 
+// Stream output
 std::ostream& operator<<(std::ostream &out, const vec3 &v) {
     return out << v.getX() << " " << v.getY() << " " << v.getZ();
 }
 
+// Binary operators
 vec3 operator+(const vec3 &u, const vec3 &v) {
     return vec3(u.getX() + v.getX(),
                 u.getY() + v.getY(),
@@ -75,4 +77,35 @@ vec3 operator*(const vec3 &u, const vec3 &v) {
     return vec3(u.getX() * v.getX(),
                 u.getY() * v.getY(),
                 u.getZ() * v.getZ());
+}
+
+// Scalar operators
+vec3 operator*(double t, const vec3 &v) {
+    return vec3(t * v.getX(),
+                t * v.getY(),
+                t * v.getZ());
+}
+vec3 operator*(const vec3 &v, double t) {
+    return t * v;
+}
+
+vec3 operator/(const vec3 &v, double t) {
+    return (1/t) * v;
+}
+
+// Vector maths
+double dot(const vec3 &u, const vec3 &v) {
+    return u.getX() * v.getX()
+         + u.getY() * v.getY()
+         + u.getZ() * v.getZ();
+}
+
+vec3 cross(const vec3 &u, const vec3 &v) {
+    return vec3(u.getY() * v.getZ() - u.getZ() * v.getY(),
+                u.getX() * v.getZ() + u.getZ() * v.getX(),
+                u.getX() * v.getY() - u.getY() * v.getX());
+}
+
+vec3 unit_vector(const vec3 &v) {
+    return v / v.length();
 }
