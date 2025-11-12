@@ -61,51 +61,54 @@ std::ostream& operator<<(std::ostream &out, const vec3 &v) {
 }
 
 // Binary operators
-vec3 operator+(const vec3 &u, const vec3 &v) {
+inline vec3 operator+(const vec3 &u, const vec3 &v) {
     return vec3(u.getX() + v.getX(),
                 u.getY() + v.getY(),
                 u.getZ() + v.getZ());
 }
 
-vec3 operator-(const vec3 &u, const vec3 &v) {
+inline vec3 operator-(const vec3 &u, const vec3 &v) {
     return vec3(u.getX() - v.getX(),
                 u.getY() - v.getY(),
                 u.getZ() - v.getZ());
 }
 
-vec3 operator*(const vec3 &u, const vec3 &v) {
+inline vec3 operator*(const vec3 &u, const vec3 &v) {
     return vec3(u.getX() * v.getX(),
                 u.getY() * v.getY(),
                 u.getZ() * v.getZ());
 }
 
 // Scalar operators
-vec3 operator*(double t, const vec3 &v) {
+inline vec3 operator*(double t, const vec3 &v) {
     return vec3(t * v.getX(),
                 t * v.getY(),
                 t * v.getZ());
 }
-vec3 operator*(const vec3 &v, double t) {
+inline vec3 operator*(const vec3 &v, double t) {
     return t * v;
 }
 
-vec3 operator/(const vec3 &v, double t) {
+inline vec3 operator/(const vec3 &v, double t) {
     return (1/t) * v;
 }
 
 // Vector maths
-double dot(const vec3 &u, const vec3 &v) {
+inline double dot(const vec3 &u, const vec3 &v) {
     return u.getX() * v.getX()
          + u.getY() * v.getY()
          + u.getZ() * v.getZ();
 }
 
-vec3 cross(const vec3 &u, const vec3 &v) {
+inline vec3 cross(const vec3 &u, const vec3 &v) {
     return vec3(u.getY() * v.getZ() - u.getZ() * v.getY(),
                 u.getX() * v.getZ() + u.getZ() * v.getX(),
                 u.getX() * v.getY() - u.getY() * v.getX());
 }
 
-vec3 unit_vector(const vec3 &v) {
+inline vec3 unit_vector(const vec3 &v) {
     return v / v.length();
 }
+
+using point3 = vec3;
+using colour = vec3;
