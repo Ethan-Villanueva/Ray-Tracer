@@ -7,7 +7,14 @@
 const double ASPECT_RATIO = 16.0 / 9.0;
 
 const colour ray_colour(const ray& r) {
-    return colour(0,0,0);
+    // Normalise
+    vec3 unit_dir = unit_vector(r.direction());
+
+    // Blend factor (scale y to [0,1])
+    auto a = 0.5 * (unit_dir.getY() + 1.0);
+
+    // Lerp between white and blue
+    return (1.0 - a) * colour(1.0, 1.0, 1.0) + a * colour(0.5, 0.7, 1.0);
 }
 
 int main() {
@@ -37,9 +44,11 @@ int main() {
     for (int i = 0; i < image_height; i++) {
         std::clog << "\rScanlines remaining: " << (image_height - i) << ' ' << std::flush;
         for (int j = 0; j < image_width; j++) {
-            auto pixel_centre = pixel_centre_top_corner + (j * pixel_delta_u) - (i * pixel_delta_v); 
-            auto ray_direction = pixel_centre - camera_point;
+            auto pixel_centre = pixel_centre_top_corner
+                              + (j * pixel_delta_u)
+                              + (i * pixel_delta_v); 
 
+            auto ray_direction = pixel_centre - camera_point;
             ray r(camera_point, ray_direction);
 
             colour pixel = ray_colour(r);
