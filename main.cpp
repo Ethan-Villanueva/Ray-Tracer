@@ -6,7 +6,27 @@
 
 const double ASPECT_RATIO = 16.0 / 9.0;
 
-const colour ray_colour(const ray& r) {
+bool hit_sphere(const point3 centre, const double radius, const ray& r) {
+    // find if ray hits using sphere func x^2 + y^2 + z^2 = r^2 in terms of vectors
+    // rearrange for quadratic eq
+    vec3 r_to_c = centre - r.origin();
+    auto a = r.direction().length_squared();
+    auto b = -2 * dot(r_to_c, r.direction());
+    auto c = r_to_c.length_squared() - (radius*radius);
+
+    // use discriminant to check if sphere hit
+    auto discriminant = (b*b) - 4*a*c;
+    return (discriminant >= 0.0);
+}
+
+colour ray_colour(const ray& r) {
+    // Sphere of centre (0,0,-1), radius 0.5
+    // If ray hits, return red
+    point3 sph_centre(0,0,-1);
+    if (hit_sphere(sph_centre, 0.5, r)) {
+        return colour(1,0,0);
+    }
+
     // Normalise
     vec3 unit_dir = unit_vector(r.direction());
 
