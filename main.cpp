@@ -6,8 +6,8 @@
 
 const double ASPECT_RATIO = 16.0 / 9.0;
 
-bool hit_sphere(const point3 centre, const double radius, const ray& r) {
-    // find if ray hits using sphere func x^2 + y^2 + z^2 = r^2 in terms of vectors
+double hit_sphere(const point3 centre, const double radius, const ray& r) {
+    // find if and where ray hits using sphere func x^2 + y^2 + z^2 = r^2 in terms of vectors
     // rearrange for quadratic eq
     vec3 r_to_c = centre - r.origin();
     auto a = r.direction().length_squared();
@@ -15,25 +15,41 @@ bool hit_sphere(const point3 centre, const double radius, const ray& r) {
     auto c = r_to_c.length_squared() - (radius*radius);
 
     // use discriminant to check if sphere hit
+    // calulate t how far along ray hits surface 
     auto discriminant = (b*b) - 4*a*c;
-    return (discriminant >= 0.0);
+    if (discriminant >= 0.0) {
+        auto t = (-b - std::sqrt(discriminant)) / (2*a);
+        return t;
+    }
+
+    // does not hit sphere
+    return -1;
 }
 
 colour ray_colour(const ray& r) {
     // Sphere of centre (0,0,-1), radius 0.5
-    // If ray hits, return red
-    point3 sph_centre(0,0,-1);
-    if (hit_sphere(sph_centre, 0.5, r)) {
-        return colour(1,0,0);
+    const point3 sph_centre(0,0,-1);
+    const double sph_radius = 0.5;
+    double t = hit_sphere(sph_centre, sph_radius, r);
+
+    // render sphere if hit
+    if (t > 0.0) {
+        point3 hit_point = r.at(t);
+        // calc normal of the surface ray hits
+        vec3 n = hit_point - sph_centre;
+        vec3 n_normalised = unit_vector(n);
+        // map to colour
+        return 0.5 * (colour(n_normalised.getX() + 1, n_normalised.getY() + 1, n_normalised.getZ() + 1));
     }
 
-    // Normalise
+    // render background
+    // normalise
     vec3 unit_dir = unit_vector(r.direction());
 
-    // Blend factor (scale y to [0,1])
+    // blend factor (scale y to [0,1])
     auto a = 0.5 * (unit_dir.getY() + 1.0);
 
-    // Lerp between white and blue
+    // lerp between white and blue
     return (1.0 - a) * colour(1.0, 1.0, 1.0) + a * colour(0.5, 0.7, 1.0);
 }
 

@@ -20,7 +20,7 @@ class ray {
             return dir;
         }
 
-        const point3 at(const double t) {
+        point3 at(const double t) const {
             return orig + (t * dir);
         }
 };
